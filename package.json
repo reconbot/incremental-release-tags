@@ -1,0 +1,27 @@
+{
+  "name": "incremental-release-tags",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "incremental-release-tags": "cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reconbot/incremental-release-tags.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/reconbot/incremental-release-tags/issues"
+  },
+  "homepage": "https://github.com/reconbot/incremental-release-tags#readme",
+  "dependencies": {
+    "args": "^5.0.0",
+    "execa": "^0.10.0"
+  }
+}
