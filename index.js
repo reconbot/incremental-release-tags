@@ -1,42 +1,53 @@
 const execa = require('execa')
+const debug = require('debug')('incremental-release-tags')
+
+function exec(...args) {
+  if (!args[0]) {
+    throw new Error('No command ' + JSON.stringify(args))
+  }
+  debug('executing', args)
+  return execa.stdout(...args)
+}
 
 async function gitFetch() {
-  await execa.stdout('git', ['fetch'])
+  await exec('git', ['fetch'])
 }
 
 async function gitTags() {
-  return (await execa.stdout('git', ['tag'])).split('\n')
+  return (await exec('git', ['tag'])).split('\n')
 }
 
 async function gitTag(name, annotation) {
-  await execa.stdout('git', ['tag', 'name', '-m', annotation])
+  await exec('git', ['tag', 'name', '-m', annotation])
 }
 
 async function currentSha() {
-  return execa.stdout('git', ['rev-parse', '--short', 'HEAD'])
+  return exec('git', ['rev-parse', '--short', 'HEAD'])
 }
 
 async function gitLog(from, to) {
-  if (!from || !to) { throw new TypeError('Need a from and to') }
-  return execa.stdout('git' ['log', `${from}..${to}`, '--oneline', '--no-decorate'])
+  if (!from || !to) {
+    throw new Error('Need a from and to')
+  }
+  return exec('git', ['log', `${from}..${to}`, '--oneline', '--no-decorate'])
 }
 
 async function ensureMaster() {
-  const branch = await execa.stdout('git', ['symbolic-ref', '--short', 'HEAD'])
+  const branch = await exec('git', ['symbolic-ref', '--short', 'HEAD'])
   if (branch !== 'master') {
     throw new Error('Not on `master` branch. We\'ll add this eventually.')
   }
 }
 
 async function ensureCleanTree() {
-  const status = await execa.stdout('git', ['status', '--porcelain'])
+  const status = await exec('git', ['status', '--porcelain'])
   if (status !== '') {
     throw new Error('Unclean working tree. Commit or stash changes first.')
   }
 }
 
 async function ensureGitHistoryMatch() {
-  const result = await execa.stdout('git', ['rev-list', '--count', '--left-only', '@{u}...HEAD'])
+  const result = await exec('git', ['rev-list', '--count', '--left-only', '@{u}...HEAD'])
   if (result !== '0') {
     throw new Error('Remote history differs. Please pull changes.')
   }
@@ -50,7 +61,7 @@ async function latestVersion(prefix) {
 }
 
 async function gitPushTags() {
-  await execa.stdout('git', ['push', '--tags'])
+  await exec('git', ['push', '--tags'])
 }
 
 module.exports = {

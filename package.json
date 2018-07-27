@@ -23,6 +23,7 @@
   "homepage": "https://github.com/reconbot/incremental-release-tags#readme",
   "dependencies": {
     "args": "^5.0.0",
+    "debug": "^3.1.0",
     "execa": "^0.10.0"
   },
   "devDependencies": {

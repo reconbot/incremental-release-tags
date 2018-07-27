@@ -47,7 +47,7 @@ async function run() {
 run().then(
   () => process.exit(0),
   err => {
-    console.log(err.message)
+    console.log(err.stack)
     process.exit(1)
   }
 )
