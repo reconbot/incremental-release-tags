@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 const args = require('args')
 const {
@@ -27,7 +28,7 @@ async function run() {
   await ensureCleanTree()
   const { tag, version } = await latestVersion(tagPrefix)
   if (version) {
-    connsole.log(`# detected previous tag ${tag}`)
+    console.log(`# detected previous tag ${tag}`)
     const nextTag = `${tagPrefix}${version+1}`
     console.log(`# next tag ${nextTag}`)
     const log = await gitLog(tag, 'HEAD')

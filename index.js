@@ -45,8 +45,8 @@ async function ensureGitHistoryMatch() {
 async function latestVersion(prefix) {
   const tags = await gitTags()
   const latestVersion = tags.filter(tag => tag.startsWith(prefix)).map(tag => tag.substring(prefix.length)).map(Number).sort().pop() || null
-  const latestTag = latestVersion ? `${prefix}${latestVersion}` : null
-  return { version, tag }
+  const tag = latestVersion ? `${prefix}${latestVersion}` : null
+  return { version: latestVersion, tag }
 }
 
 async function gitPushTags() {
@@ -63,4 +63,5 @@ module.exports = {
   gitLog,
   gitPushTags,
   gitTags,
+  gitTag
 }
