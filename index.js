@@ -5,10 +5,19 @@ async function gitFetch() {
 }
 
 async function gitTags() {
-  return (await execa.stdout('git', ['tag'])).split()
+  return (await execa.stdout('git', ['tag'])).split('\n')
 }
 
-async function gitLog(from = 'HEAD~4', to = 'HEAD') {
+async function gitTag(name, annotation) {
+  await execa.stdout('git', ['tag', 'name', '-m', annotation])
+}
+
+async function currentSha() {
+  return execa.stdout('git', ['rev-parse', '--short', 'HEAD'])
+}
+
+async function gitLog(from, to) {
+  if (!from || !to) { throw new TypeError('Need a from and to') }
   return execa.stdout('git' ['log', `${from}..${to}`, '--oneline', '--no-decorate'])
 }
 
@@ -33,11 +42,25 @@ async function ensureGitHistoryMatch() {
   }
 }
 
+async function latestVersion(prefix) {
+  const tags = await gitTags()
+  const latestVersion = tags.filter(tag => tag.startsWith(prefix)).map(tag => tag.substring(prefix.length)).map(Number).sort().pop() || null
+  const latestTag = latestVersion ? `${prefix}${latestVersion}` : null
+  return { version, tag }
+}
+
+async function gitPushTags() {
+  await execa.stdout('git', ['push', '--tags'])
+}
+
 module.exports = {
+  currentSha,
+  ensureCleanTree,
+  ensureGitHistoryMatch,
+  ensureMaster,
+  latestVersion,
   gitFetch,
   gitLog,
+  gitPushTags,
   gitTags,
-  ensureMaster,
-  ensureCleanTree,
-  ensureGitHistoryMatch
 }

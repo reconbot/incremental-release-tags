@@ -1,28 +1,52 @@
 #!/usr/bin/env node
 
 const args = require('args')
-const { gitFetch, ensureGitHistoryMatch, ensureCleanTree } = require('./index')
+const {
+  currentSha,
+  ensureCleanTree,
+  ensureGitHistoryMatch,
+  ensureMaster,
+  gitFetch,
+  gitLog,
+  gitPushTags,
+  gitTag,
+  latestVersion,
+} = require('./index')
 
 args
   .option('prefix', 'prefix of the tag to look for', 'v')
-  .option('reload', 'Enable/disable livereloading')
 
 const { prefix: tagPrefix } = args.parse(process.argv)
 
 async function run() {
-  process.stdout.write('Git Fetch.... ')
+  process.stdout.write('# running git fetch.... ')
   await gitFetch()
   console.log('done.')
   await ensureMaster()
   await ensureGitHistoryMatch()
   await ensureCleanTree()
-
+  const { tag, version } = await latestVersion(tagPrefix)
+  if (version) {
+    connsole.log(`# detected previous tag ${tag}`)
+    const nextTag = `${tagPrefix}${version+1}`
+    console.log(`# next tag ${nextTag}`)
+    const log = await gitLog(tag, 'HEAD')
+    await gitTag(nextTag, `${nextTag}${log ? '\n\n' + log : ''}`)
+    await gitPushTags()
+    console.log(`pushed sha #${await currentSha()} to tag ${nextTag}\n${log}`)
+  } else {
+    const nextTag = `${tagPrefix}1`
+    console.log(`# next tag ${nextTag}`)
+    await gitTag(nextTag, nextTag)
+    await gitPushTags()
+    console.log(`pushed sha #${await currentSha()} to tag ${nextTag}`)
+  }
 }
 
 run().then(
   () => process.exit(0),
   err => {
-    console.log(err.stack)
+    console.log(err.message)
     process.exit(1)
   }
 )
