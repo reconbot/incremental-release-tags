@@ -47,9 +47,9 @@ async function ensureCleanTree() {
 }
 
 async function ensureGitHistoryMatch() {
-  const result = await exec('git', ['rev-list', '--count', '--left-only', '@{u}...HEAD'])
+  const result = await exec('git', ['rev-list', '--count', '@{u}...HEAD'])
   if (result !== '0') {
-    throw new Error('Remote history differs. Please pull changes.')
+    throw new Error('Remote history differs. Please push or pull changes.')
   }
 }
 
