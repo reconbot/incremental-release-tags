@@ -18,7 +18,7 @@ async function gitTags() {
 }
 
 async function gitTag(name, annotation) {
-  await exec('git', ['tag', 'name', '-m', annotation])
+  await exec('git', ['tag', name, '-m', annotation])
 }
 
 async function currentSha() {
