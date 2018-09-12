@@ -16,8 +16,7 @@ const {
   releaseUrl
 } = require('./index')
 
-args
-  .option('prefix', 'prefix of the tag to look for', 'v')
+args.option('prefix', 'prefix of the tag to look for', 'v')
 
 const { prefix: tagPrefix } = args.parse(process.argv)
 
