@@ -36,7 +36,7 @@ async function run() {
     const lineWithFormatting = log.split('\n').map(line => `- ${line}`).join('\n')
     await gitTag(nextTag, `${nextTag}${log ? '\n\n' + lineWithFormatting : ''}`)
     await gitPushTags()
-    console.log(`pushed sha #${await currentSha()} to tag ${nextTag}`)
+    console.log(`# pushed sha #${await currentSha()} to tag ${nextTag}`)
     console.log(`# Release: ${await releaseUrl(nextTag)}`)
     console.log(`\nChange Log: ${await compareUrl(tag, nextTag)}\n${lineWithFormatting}`)
   } else {
@@ -44,7 +44,7 @@ async function run() {
     console.log(`# next tag ${nextTag}`)
     await gitTag(nextTag, nextTag)
     await gitPushTags()
-    console.log(`pushed sha #${await currentSha()} to tag ${nextTag}`)
+    console.log(`# pushed sha #${await currentSha()} to tag ${nextTag}`)
     console.log(`# Release: ${await releaseUrl(nextTag)}`)
   }
 }
