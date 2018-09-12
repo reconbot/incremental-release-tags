@@ -33,11 +33,12 @@ async function run() {
     const nextTag = `${tagPrefix}${version+1}`
     console.log(`# next tag ${nextTag}`)
     const log = await gitLog(tag, 'HEAD')
-    await gitTag(nextTag, `${nextTag}${log ? '\n\n' + log : ''}`)
+    const lineWithFormatting = log.split('\n').map(line => `- ${line}`).join('\n')
+    await gitTag(nextTag, `${nextTag}${log ? '\n\n' + lineWithFormatting : ''}`)
     await gitPushTags()
     console.log(`pushed sha #${await currentSha()} to tag ${nextTag}`)
     console.log(`# Release: ${await releaseUrl(nextTag)}`)
-    console.log(`\nChange Log: ${await compareUrl(tag, nextTag)}\n${log}`)
+    console.log(`\nChange Log: ${await compareUrl(tag, nextTag)}\n${lineWithFormatting}`)
   } else {
     const nextTag = `${tagPrefix}1`
     console.log(`# next tag ${nextTag}`)
