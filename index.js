@@ -78,6 +78,17 @@ async function compareUrl(tag, nextTag) {
   return `https://github.com/${owner}/${repo}/compare/${tag}...${nextTag}`
 }
 
+async function releaseUrl(tag) {
+  const gitUrl = await exec('git', ['config', 'remote.origin.url'])
+  const parts = gitUrl.match(/.+github.com[:/]([\w-]+)\/([\w-]+)\.git/)
+  if (!parts) {
+    return null
+  }
+  const owner = parts[1]
+  const repo = parts[2]
+  return `https://github.com/${owner}/${repo}/releases/tag/${tag}`
+}
+
 module.exports = {
   currentSha,
   ensureCleanTree,
@@ -89,5 +100,6 @@ module.exports = {
   gitPushTags,
   gitTags,
   gitTag,
-  compareUrl
+  compareUrl,
+  releaseUrl
 }

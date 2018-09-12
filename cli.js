@@ -12,7 +12,8 @@ const {
   gitPushTags,
   gitTag,
   latestVersion,
-  compareUrl
+  compareUrl,
+  releaseUrl
 } = require('./index')
 
 args
@@ -43,6 +44,7 @@ async function run() {
     await gitTag(nextTag, nextTag)
     await gitPushTags()
     console.log(`pushed sha #${await currentSha()} to tag ${nextTag}`)
+    console.log(`Release: ${await releaseUrl(nextTag)}`)
   }
 }
 
