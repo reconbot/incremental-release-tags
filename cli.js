@@ -12,6 +12,7 @@ const {
   gitPushTags,
   gitTag,
   latestVersion,
+  compareUrl
 } = require('./index')
 
 args
@@ -34,7 +35,8 @@ async function run() {
     const log = await gitLog(tag, 'HEAD')
     await gitTag(nextTag, `${nextTag}${log ? '\n\n' + log : ''}`)
     await gitPushTags()
-    console.log(`pushed sha #${await currentSha()} to tag ${nextTag}\n${log}`)
+    console.log(`pushed sha #${await currentSha()} to tag ${nextTag}`)
+    console.log(`Change Log: ${await compareUrl(tag, nextTag)}\n${log}`)
   } else {
     const nextTag = `${tagPrefix}1`
     console.log(`# next tag ${nextTag}`)

@@ -64,6 +64,20 @@ async function gitPushTags() {
   await exec('git', ['push', '--tags'])
 }
 
+
+// git@github.com:reconbot/incremental-release-tags.git
+// https://github.com/reconbot/incremental-release-tags.git
+async function compareUrl(tag, nextTag) {
+  const gitUrl = await exec('git', ['config', 'remote.origin.url'])
+  const parts = gitUrl.match(/.+github.com[:/]([\w-]+)\/([\w-]+)\.git/)
+  if (!parts) {
+    return null
+  }
+  const owner = parts[1]
+  const repo = parts[2]
+  return `https://github.com/${owner}/${repo}/compare/${tag}...${nextTag}`
+}
+
 module.exports = {
   currentSha,
   ensureCleanTree,
@@ -74,5 +88,6 @@ module.exports = {
   gitLog,
   gitPushTags,
   gitTags,
-  gitTag
+  gitTag,
+  compareUrl
 }
