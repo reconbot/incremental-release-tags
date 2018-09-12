@@ -33,7 +33,7 @@ async function run() {
     const nextTag = `${tagPrefix}${version+1}`
     console.log(`# next tag ${nextTag}`)
     const log = await gitLog(tag, 'HEAD')
-    const lineWithFormatting = log.split('\n').map(line => `- #${line}`).join('\n')
+    const lineWithFormatting = log.split('\n').map(line => `- ${line}`).join('\n')
     await gitTag(nextTag, `${nextTag}${log ? '\n\n' + lineWithFormatting : ''}`)
     await gitPushTags()
     console.log(`# pushed sha #${await currentSha()} to tag ${nextTag}`)
