@@ -38,7 +38,7 @@ async function run() {
     await gitPushTags()
     console.log(`# pushed sha #${await currentSha()} to tag ${nextTag}`)
     console.log(`# Release: ${await releaseUrl(nextTag)}`)
-    console.log(`\nChange Log: ${await compareUrl(tag, nextTag)}\n${lineWithFormatting}`)
+    console.log(`\nChangelog: ${await compareUrl(tag, nextTag)}\n${lineWithFormatting}`)
   } else {
     const nextTag = `${tagPrefix}1`
     console.log(`# next tag ${nextTag}`)
