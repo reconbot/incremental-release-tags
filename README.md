@@ -3,9 +3,25 @@
 I needed a small cli to help create the next version of release tags using an incremting number
 
 # Usage
+```
+  Usage: incremental-release-tags [options] [command]
+
+  Commands:
+    help     Display help
+    version  Display version
+
+  Options:
+    -h, --help               Output usage information
+    -p, --prefix [value]     prefix of the tag to look for (defaults to "v")
+    -s, --skip-confirmation  skip prompt to deploy to production (disabled by default)
+    -v, --version            Output the version number
+```
+
 
 ```bash
 $ incremental-release-tags --prefix 'v'
+# Deploy Production (y/n)
+y
 # running `git fetch`
 # detected previous tag v42
 # next tag v43

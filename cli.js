@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 
 const args = require('args')
+const promptly = require('promptly')
 const {
   currentSha,
   ensureCleanTree,
@@ -17,10 +18,18 @@ const {
 } = require('./index')
 
 args.option('prefix', 'prefix of the tag to look for', 'v')
+args.option('skip-confirmation', 'skip prompt to deploy to production', false)
 
-const { prefix: tagPrefix } = args.parse(process.argv)
+const { prefix: tagPrefix, skipConfirmation } = args.parse(process.argv)
 
 async function run() {
+  if (!skipConfirmation) {
+    const stillDeploy = await promptly.confirm('# Deploy Production? (y/n)')
+    if (!stillDeploy) {
+      console.error('Not deploying')
+      process.exit(0)
+    }
+  }
   process.stdout.write('# running git fetch.... ')
   await gitFetch()
   console.log('done.')
