@@ -22,14 +22,17 @@ args.option('skip-confirmation', 'skip prompt to deploy to production', false)
 
 const { prefix: tagPrefix, skipConfirmation } = args.parse(process.argv)
 
-async function run() {
+const confirmDeploy = async () => {
   if (!skipConfirmation) {
-    const stillDeploy = await promptly.confirm('# Deploy Production? (y/n)')
-    if (!stillDeploy) {
+    const deploy = await promptly.confirm('# Deploy Production? (y/n)')
+    if (!deploy) {
       console.error('Not deploying')
       process.exit(0)
     }
   }
+}
+
+async function run() {
   process.stdout.write('# running git fetch.... ')
   await gitFetch()
   console.log('done.')
@@ -40,17 +43,20 @@ async function run() {
   if (version) {
     console.log(`# detected previous tag ${tag}`)
     const nextTag = `${tagPrefix}${version+1}`
-    console.log(`# next tag ${nextTag}`)
     const log = await gitLog(tag, 'HEAD')
     const lineWithFormatting = log.split('\n').map(line => `- ${line}`).join('\n')
+    console.log(`# ${nextTag} Changelog:`)
+    console.log(lineWithFormatting)
+    await confirmDeploy()
     await gitTag(nextTag, `${nextTag}${log ? '\n\n' + lineWithFormatting : ''}`)
     await gitPushTags()
     console.log(`# pushed sha #${await currentSha()} to tag ${nextTag}`)
     console.log(`# Release: ${await releaseUrl(nextTag)}`)
-    console.log(`\nChangelog: ${await compareUrl(tag, nextTag)}\n${lineWithFormatting}`)
+    console.log(`# Compare: ${await compareUrl(tag, nextTag)}`)
   } else {
     const nextTag = `${tagPrefix}1`
     console.log(`# next tag ${nextTag}`)
+    await confirmDeploy()
     await gitTag(nextTag, nextTag)
     await gitPushTags()
     console.log(`# pushed sha #${await currentSha()} to tag ${nextTag}`)
