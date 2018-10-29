@@ -55,13 +55,14 @@ async function ensureGitHistoryMatch() {
 
 async function latestVersion(prefix) {
   const tags = await gitTags()
-  const latestVersion = tags
+  const latest = tags
     .filter(tag => tag.startsWith(prefix))
     .map(tag => tag.substring(prefix.length))
+    .filter(tag => tag.match(/^\d+$/))
     .map(Number)
     .sort((a, b) => a - b).pop() || null
-  const tag = latestVersion ? `${prefix}${latestVersion}` : null
-  return { version: latestVersion, tag }
+  const tag = latest ? `${prefix}${latest}` : null
+  return { version: latest, tag }
 }
 
 async function gitPushTags() {
